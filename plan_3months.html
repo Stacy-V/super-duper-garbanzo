@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Мой план на 3 месяца</title>
+<style>
+  :root {
+    --teal: #0F6E56; --teal-light: #E1F5EE; --teal-mid: #1D9E75;
+    --amber: #854F0B; --amber-light: #FAEEDA; --amber-mid: #EF9F27;
+    --red: #A32D2D; --red-light: #FCEBEB;
+    --blue: #185FA5; --blue-light: #E6F1FB;
+    --gray: #5F5E5A; --gray-light: #F1EFE8; --gray-mid: #B4B2A9;
+    --text: #2C2C2A; --text-muted: #888780;
+    --border: rgba(0,0,0,0.1); --bg: #FAFAF8;
+    --card: #ffffff; --radius: 12px; --radius-sm: 8px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.6; }
+  .container { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+  h1 { font-size: 22px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { color: var(--text-muted); font-size: 14px; margin-bottom: 28px; }
+  h2 { font-size: 13px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text-muted); margin: 28px 0 12px; }
+  .card { background: var(--card); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 10px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+  .tab { flex: 1; padding: 10px; text-align: center; border-radius: var(--radius-sm); border: 0.5px solid var(--border); background: var(--card); font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.15s; color: var(--text-muted); }
+  .tab.active { background: var(--teal); color: white; border-color: var(--teal); }
+  .schedule { display: none; }
+  .schedule.active { display: block; }
+  .time-row { display: grid; grid-template-columns: 72px 1fr; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .time-row:last-child { border-bottom: none; }
+  .time { font-size: 13px; font-weight: 600; color: var(--teal); font-variant-numeric: tabular-nums; padding-top: 2px; }
+  .time-label { font-size: 14px; font-weight: 500; color: var(--text); }
+  .time-sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .tag { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 7px; border-radius: 99px; margin-right: 4px; margin-top: 4px; }
+  .tag-teal { background: var(--teal-light); color: var(--teal); }
+  .tag-amber { background: var(--amber-light); color: var(--amber); }
+  .tag-blue { background: var(--blue-light); color: var(--blue); }
+  .tag-red { background: var(--red-light); color: var(--red); }
+  .rule-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .rule-row:last-child { border-bottom: none; }
+  .rule-icon { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+  .rule-name { font-size: 14px; font-weight: 500; }
+  .rule-desc { font-size: 13px; color: var(--text-muted); margin-top: 2px; line-height: 1.5; }
+  .check-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .check-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: var(--radius-sm); border: 0.5px solid var(--border); font-size: 13px; background: var(--card); }
+  .check-box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--gray-mid); flex-shrink: 0; }
+  .month-row { display: grid; grid-template-columns: 80px 1fr; gap: 12px; padding: 12px 0; border-bottom: 0.5px solid var(--border); align-items: flex-start; }
+  .month-row:last-child { border-bottom: none; }
+  .month-badge { font-size: 12px; font-weight: 600; padding: 4px 8px; border-radius: var(--radius-sm); text-align: center; }
+  .m1 { background: var(--teal-light); color: var(--teal); }
+  .m2 { background: var(--amber-light); color: var(--amber); }
+  .m3 { background: var(--blue-light); color: var(--blue); }
+  .month-text { font-size: 14px; color: var(--text); }
+  .month-sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
+  .warn-box { background: var(--amber-light); border-left: 3px solid var(--amber-mid); border-radius: 0 var(--radius-sm) var(--radius-sm) 0; padding: 12px 14px; margin-bottom: 10px; }
+  .warn-text { font-size: 13px; color: var(--amber); line-height: 1.6; }
+  .lab-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+  .lab-item { display: flex; justify-content: space-between; align-items: center; padding: 9px 12px; background: var(--gray-light); border-radius: var(--radius-sm); font-size: 13px; }
+  .lab-name { color: var(--text); }
+  .lab-when { color: var(--text-muted); font-size: 12px; }
+  .footer-note { text-align: center; font-size: 13px; color: var(--text-muted); margin-top: 32px; padding-top: 20px; border-top: 0.5px solid var(--border); }
+  @media print { body { background: white; } .container { padding: 12px; } }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <h1>Мой план восстановления метаболизма</h1>
+  <p class="subtitle">3 месяца · Июнь — август 2026 · График работы 2/2</p>
+
+  <div class="warn-box">
+    <p class="warn-text"><strong>Важно сейчас:</strong> витамин D принимать 4000 МЕ (не 2000 — это вдвое ниже назначенного). Уточнить у эндокринолога вопрос про йодомарин при АТ-ТПО 105. Эутирокс и инозитол — обсудить с врачом возобновление.</p>
+  </div>
+
+  <h2>График дня</h2>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('work')">🏢 Рабочий день (8–19)</div>
+    <div class="tab" onclick="switchTab('off')">🏠 Выходной день</div>
+  </div>
+
+  <div class="card" style="padding: 8px 16px;">
+
+    <div class="schedule active" id="sched-work">
+      <div class="time-row">
+        <div class="time">06:15</div>
+        <div><div class="time-label">Подъём</div><div class="time-sub">Стакан воды сразу после подъёма — до кофе</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">06:30</div>
+        <div><div class="time-label">Завтрак — обязательно с белком</div><div class="time-sub">Яйца / творог / омлет / курица. Без каш на воде и без одного банана. Белок сразу задаёт тон инсулину на весь день.</div><div><span class="tag tag-teal">белок 25–30 г</span><span class="tag tag-amber">без быстрых углеводов</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">07:15</div>
+        <div><div class="time-label">Выход на работу</div><div class="time-sub">Если есть возможность пройти пешком — отлично. Каждые 100 шагов в счёт.</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">08–19</div>
+        <div><div class="time-label">Работа</div><div class="time-sub">Обед: тот же принцип — белок + овощи + немного сложных углеводов (гречка, бурый рис). Не пропускать обед. После обеда 10–15 мин прогулка если возможно. Вода в течение дня — не меньше 1.5 л.</div><div><span class="tag tag-blue">обед без пропусков</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">19:30</div>
+        <div><div class="time-label">Возврат домой</div><div class="time-sub">Переодеться, отдышаться. Не есть "с порога".</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">19:45</div>
+        <div><div class="time-label">Ужин</div><div class="time-sub">Белок + некрахмалистые овощи. Без хлеба, картошки, риса. Последний приём пищи до 20:00.</div><div><span class="tag tag-teal">белок + овощи</span><span class="tag tag-red">без еды после 20:00</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">20:10</div>
+        <div><div class="time-label">Прогулка 15–20 минут</div><div class="time-sub">Ключевая привычка. Прогулка сразу после ужина снижает постпрандиальный инсулиновый скачок. Можно просто вокруг дома. Каждый день.</div><div><span class="tag tag-teal">каждый день без исключений</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">20:30</div>
+        <div><div class="time-label">Свободное время + замер в дневник</div><div class="time-sub">Отметить в трекере: вода, еда, прогулка, самочувствие, цикл</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">22:00</div>
+        <div><div class="time-label">Подготовка ко сну</div><div class="time-sub">Телефон — режим не беспокоить. Экраны в сторону хотя бы за 30 минут до сна.</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">22:30</div>
+        <div><div class="time-label">Сон</div><div class="time-sub">Цель — 7.5–8 часов. Это не опция, это лечение. Один недосып поднимает инсулинорезистентность сопоставимо с плохим питанием.</div><div><span class="tag tag-blue">7.5–8 часов</span></div></div>
+      </div>
+    </div>
+
+    <div class="schedule" id="sched-off">
+      <div class="time-row">
+        <div class="time">07:30</div>
+        <div><div class="time-label">Подъём</div><div class="time-sub">Стакан воды. Не позже 8:00 — режим важен в выходные так же, как в рабочие дни.</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">07:45</div>
+        <div><div class="time-label">Завтрак с белком</div><div class="time-sub">Яйца / творог / омлет с овощами. Хороший завтрак в выходной — основа, чтобы не сорваться к вечеру.</div><div><span class="tag tag-teal">белок 25–30 г</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">10:00</div>
+        <div><div class="time-label">Силовая тренировка 35–40 мин</div><div class="time-sub">Минимум 2 раза в неделю — на выходных. Дома достаточно: приседания, выпады, отжимания, ягодичный мостик, планка. Или зал — по желанию. Силовые мышцы утилизируют глюкозу без инсулина — это прямое воздействие на HOMA-IR.</div><div><span class="tag tag-teal">2× в неделю</span><span class="tag tag-amber">главный инструмент против ИР</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">11:00</div>
+        <div><div class="time-label">Активный досуг / прогулка</div><div class="time-sub">Магазин пешком, парк, любая физическая активность. В выходной можно добавить 40–60 мин ходьбы.</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">13:30</div>
+        <div><div class="time-label">Обед</div><div class="time-sub">Белок + сложные углеводы (гречка, чечевица, нут) + овощи. Без фастфуда и сладкого.</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">19:00</div>
+        <div><div class="time-label">Ужин</div><div class="time-sub">Белок + овощи. Без хлеба и крахмала. До 20:00.</div><div><span class="tag tag-red">последний приём до 20:00</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">19:20</div>
+        <div><div class="time-label">Прогулка 20–30 минут</div><div class="time-sub">В выходной можно дольше. Главное — каждый день после ужина.</div><div><span class="tag tag-teal">каждый день</span></div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">20:00</div>
+        <div><div class="time-label">Дневник + планы на завтра</div><div class="time-sub">Трекер, взвешивание (раз в неделю — в один и тот же день), замеры (раз в 2 недели).</div></div>
+      </div>
+      <div class="time-row">
+        <div class="time">22:30</div>
+        <div><div class="time-label">Сон</div><div class="time-sub">Режим одинаковый в выходной и рабочий день — это критично для метаболизма.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Правила питания</h2>
+  <div class="card" style="padding: 8px 16px;">
+    <div class="rule-row">
+      <div class="rule-icon" style="background: var(--teal-light);">✓</div>
+      <div><div class="rule-name">Каждый приём пищи: белок + клетчатка + немного сложных углеводов</div><div class="rule-desc">Яйца, мясо, рыба, творог, бобовые. Овощи без ограничений. Гречка, бурый рис, чечевица — немного и только в первой половине дня.</div></div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-icon" style="background: var(--red-light);">✗</div>
+      <div><div class="rule-name">Убрать: сахар, белый хлеб, выпечка, сладкие напитки, белый рис, картошка порциями</div><div class="rule-desc">Это не "вредные продукты морально" — это вещи, которые резко поднимают инсулин. При HOMA-IR 4.94 организм уже на них реагирует непропорционально сильно.</div></div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-icon" style="background: var(--amber-light);">!</div>
+      <div><div class="rule-name">Не пропускать приёмы пищи</div><div class="rule-desc">Особенно завтрак. Пропуск → голод → резкий подъём инсулина на следующем приёме. Это обратный эффект.</div></div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-icon" style="background: var(--blue-light);">💧</div>
+      <div><div class="rule-name">Вода 1.5–2 литра в день</div><div class="rule-desc">Не чай, не сок — именно вода. Стакан утром до еды — обязательно.</div></div>
+    </div>
+    <div class="rule-row">
+      <div class="rule-icon" style="background: var(--red-light);">🌙</div>
+      <div><div class="rule-name">Никакой еды после 20:00</div><div class="rule-desc">Ночной инсулин и кортизол — это отдельная история. Ночное питание сбивает их оба.</div></div>
+    </div>
+  </div>
+
+  <h2>Ежедневный чеклист</h2>
+  <div class="card">
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">Распечатай и отмечай каждый день — или веди в заметках телефона</p>
+    <div class="check-grid">
+      <div class="check-item"><div class="check-box"></div>Стакан воды утром</div>
+      <div class="check-item"><div class="check-box"></div>Завтрак с белком</div>
+      <div class="check-item"><div class="check-box"></div>Обед не пропущен</div>
+      <div class="check-item"><div class="check-box"></div>Еда до 20:00</div>
+      <div class="check-item"><div class="check-box"></div>Прогулка после ужина</div>
+      <div class="check-item"><div class="check-box"></div>1.5+ л воды за день</div>
+      <div class="check-item"><div class="check-box"></div>Без сахара/выпечки</div>
+      <div class="check-item"><div class="check-box"></div>Сон до 23:00</div>
+      <div class="check-item"><div class="check-box"></div>Силовая (2× в нед.)</div>
+      <div class="check-item"><div class="check-box"></div>Витамин D 4000 МЕ</div>
+    </div>
+  </div>
+
+  <h2>Еженедельный мониторинг (понедельник утром)</h2>
+  <div class="card" style="padding: 8px 16px;">
+    <div class="time-row">
+      <div class="time" style="font-size: 12px; color: var(--text-muted);">Вес</div>
+      <div><div class="time-label">Взвешивание</div><div class="time-sub">Утром натощак, после туалета, до еды. Записать. Не паниковать при ±1 кг — это вода.</div></div>
+    </div>
+    <div class="time-row">
+      <div class="time" style="font-size: 12px; color: var(--text-muted);">Талия</div>
+      <div><div class="time-label">Обхват талии раз в 2 недели</div><div class="time-sub">При СПКЯ и ИР талия — более честный показатель, чем вес. Норма для женщин — до 80 см. Замерять на уровне пупка, выдох.</div></div>
+    </div>
+    <div class="time-row">
+      <div class="time" style="font-size: 12px; color: var(--text-muted);">Цикл</div>
+      <div><div class="time-label">Отмечать начало/конец менструации</div><div class="time-sub">Это главный маркер для гинеколога-эндокринолога. Приложение Flo или просто заметки.</div></div>
+    </div>
+    <div class="time-row">
+      <div class="time" style="font-size: 12px; color: var(--text-muted);">Кожа</div>
+      <div><div class="time-label">Субъективная оценка кожи 1–10</div><div class="time-sub">Записывать раз в неделю. Врачу-дерматологу будет важна динамика.</div></div>
+    </div>
+    <div class="time-row">
+      <div class="time" style="font-size: 12px; color: var(--text-muted);">Энергия</div>
+      <div><div class="time-label">Уровень энергии и настроение</div><div class="time-sub">1–5. Это косвенный маркер работы щитовидки и метаболизма в целом.</div></div>
+    </div>
+  </div>
+
+  <h2>Анализы — что и когда сдать</h2>
+  <div class="card">
+    <div class="lab-grid">
+      <div class="lab-item"><span class="lab-name">ДП12 — метаболический профиль</span><span class="lab-when">Месяц 3</span></div>
+      <div class="lab-item"><span class="lab-name">ЛГ + ФСГ + Эстрадиол</span><span class="lab-when">День 2–5 цикла</span></div>
+      <div class="lab-item"><span class="lab-name">Тестостерон общий и свободный</span><span class="lab-when">День 2–5 цикла</span></div>
+      <div class="lab-item"><span class="lab-name">ДГЭА-С (надпочечниковый андроген)</span><span class="lab-when">День 2–5 цикла</span></div>
+      <div class="lab-item"><span class="lab-name">АТ-ТПО (контроль)</span><span class="lab-when">Месяц 3</span></div>
+      <div class="lab-item"><span class="lab-name">Витамин D 25-OH</span><span class="lab-when">Месяц 3</span></div>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-top: 12px;">Все анализы сдать натощак. Гормональные — строго на 2–5 день цикла.</p>
+  </div>
+
+  <h2>Три месяца — цели и маркеры</h2>
+  <div class="card" style="padding: 8px 16px;">
+    <div class="month-row">
+      <div class="month-badge m1">Месяц 1<br><span style="font-weight:400; font-size:11px;">Привычки</span></div>
+      <div>
+        <div class="month-text">Строю режим и не срываюсь</div>
+        <div class="month-sub">Цель: чеклист выполняется 5+ дней из 7. Вес минус 1–2 кг. Завтрак стал автоматическим. Прогулки после ужина — каждый день.</div>
+      </div>
+    </div>
+    <div class="month-row">
+      <div class="month-badge m2">Месяц 2<br><span style="font-weight:400; font-size:11px;">Динамика</span></div>
+      <div>
+        <div class="month-text">Привычки работают без усилий</div>
+        <div class="month-sub">Цель: вес минус 3–4 кг от старта. Талия -2–3 см. Начинает чувствоваться больше энергии. Кожа немного ровнее. Цикл — отмечаю всё.</div>
+      </div>
+    </div>
+    <div class="month-row">
+      <div class="month-badge m3">Месяц 3<br><span style="font-weight:400; font-size:11px">Итог</span></div>
+      <div>
+        <div class="month-text">Готова к визиту с доказательствами</div>
+        <div class="month-sub">Цель: вес минус 5–7 кг от старта. Сданы все анализы. На руках: таблица веса/талии за 3 мес, дневник цикла, оценка кожи и энергии. Это весомые данные для врача.</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Что принести врачу через 3 месяца</h2>
+  <div class="card">
+    <div class="lab-grid">
+      <div class="lab-item"><span class="lab-name">📊 Таблица веса — каждую неделю</span><span class="lab-when">3 мес.</span></div>
+      <div class="lab-item"><span class="lab-name">📏 Обхват талии — каждые 2 нед.</span><span class="lab-when">3 мес.</span></div>
+      <div class="lab-item"><span class="lab-name">🩸 Анализы (ДП12 + гормоны)</span><span class="lab-when">перед визитом</span></div>
+      <div class="lab-item"><span class="lab-name">📅 Дневник цикла (Flo / заметки)</span><span class="lab-when">3 мес.</span></div>
+      <div class="lab-item"><span class="lab-name">💬 Вопрос: КОК с учётом моих данных</span><span class="lab-when">на приём</span></div>
+      <div class="lab-item"><span class="lab-name">💬 Вопрос: йодомарин при АТ-ТПО?</span><span class="lab-when">на приём</span></div>
+    </div>
+  </div>
+
+  <p class="footer-note">Сохрани эту страницу · Распечатай чеклист · Ты справишься с этим</p>
+
+</div>
+<script>
+function switchTab(type) {
+  document.querySelectorAll('.tab').forEach((t,i) => t.classList.toggle('active', (type==='work' && i===0)||(type==='off' && i===1)));
+  document.querySelectorAll('.schedule').forEach(s => s.classList.remove('active'));
+  document.getElementById('sched-'+type).classList.add('active');
+}
+</script>
+</body>
+</html>
